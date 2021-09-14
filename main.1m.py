@@ -65,6 +65,7 @@ icsList = glob.glob(path + "/**/*.ics", recursive=True)
 formatFileList = []
 calList = []
 
+# 获取日历内容
 for fileName in icsList:
     if len(filterIcs) > 0:
         filterRes = True
@@ -102,6 +103,7 @@ for fileName in icsList:
     if len(cal.keys()) > 0:
         formatFileList.append(cal)
 
+# 格式化内容转对象Cal列表
 for item in formatFileList:
     if len(item["VEVENT"].keys()) > 0:
         start = ""
