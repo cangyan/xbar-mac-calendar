@@ -34,6 +34,21 @@ class Cal:
                 return 2
             else:
                 return 1
+    def to_display(self):
+        status = self.get_status()
+        if status == 0 :
+            print(":rocket: "+self.summary)
+        if status == 1:
+            print(":construction:"+self.summary)
+        if status == 2:
+            print(":white_check_mark:"+self.summary)
+        if status == 3:
+            print(":lock:"+self.summary)
+        print("----")
+        print("--简介:" + self.desc)
+        print("--开始时间: " + self.start.__str__())
+        print("--结束时间: " + self.end.__str__())
+            
 
 
 userHome = os.path.expanduser('~')
@@ -54,7 +69,7 @@ for fileName in icsList:
     with open(fileName, "r") as f:
         for line in f:
             cal["file"] = fileName
-            l = str.split(line, ":")
+            l = str.split(line, ":", 1)
             # print(l)
             if (l[0] == "BEGIN" and (l[1] == "VCALENDAR\n" or l[1] == "VEVENT\n" or l[1] == "VALARM\n")):
                 level += 1
@@ -69,6 +84,7 @@ for fileName in icsList:
                     key = keyStack[len(keyStack)-1]
                 continue
             # print(key, keyStack)
+           
             if len(l) > 1:
                 cal[key].update({l[0].strip(): l[1].strip().rstrip("\n")})
     if len(cal.keys()) > 0:
@@ -112,7 +128,7 @@ for item in formatFileList:
         today = today.replace(hour=0, minute=0, second=0, microsecond=0)
 
         diff = start - today
-        if diff.days >= 0 and diff.days <= days:
+        if diff.days >= -7 and diff.days <= days:
             c = Cal(start, end, summary, loc, desc)
             calList.append(c)
 
@@ -130,20 +146,20 @@ for item in calList:
     if status == 0:
         if preTips == "":
             preTips = ":rocket: "+item.summary
-        todayList.append(":rocket: "+item.summary)
+        todayList.append(item)
     
     if status == 1:
         if preTips == "":
             preTips = ":construction:"+item.summary
-        todayList.append(":construction:"+item.summary)
+        todayList.append(item)
     
     if status == 2:
         todayFinishCount+=1
-        todayList.append(":white_check_mark:"+item.summary)
+        todayList.append(item)
     
     if status == 3:
         futureCount+=1
-        futureList.append(":lock: "+item.summary)
+        futureList.append(item)
     
 
 preShow = False
@@ -163,10 +179,9 @@ print(preTips + "| size=14")
 print("---")
 if preShow: print(preTips)
 for item in todayList:
-    print(item)
+    item.to_display()
 
 print("---")
 print(futureTips + "| size=14")
 for item in futureList:
-    
-    print(item)
+    item.to_display()
