@@ -39,11 +39,11 @@ class Cal:
         if status == 0 :
             print(":rocket: "+self.summary)
         if status == 1:
-            print(":construction:"+self.summary)
+            print(":construction: "+self.summary)
         if status == 2:
-            print(":white_check_mark:"+self.summary)
+            print(":white_check_mark: "+self.summary)
         if status == 3:
-            print(":lock:"+self.summary)
+            print(":lock: "+self.summary)
         print("----")
         print("--简介:" + self.desc)
         print("--开始时间: " + self.start.__str__())
