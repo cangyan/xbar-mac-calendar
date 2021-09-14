@@ -12,6 +12,10 @@ import os
 import glob
 from datetime import date, datetime
 
+days = 3
+filterIcs = ["CB445FE1-F8F9-4520-A273-B41F496A6E0E",
+             "0077FD37-8D64-47AF-9D89-61FCAB1DF9D6"]
+
 
 class Cal:
     def __init__(self, start: datetime = "", end: datetime = "", summary="", loc="", desc="") -> None:
@@ -34,9 +38,10 @@ class Cal:
                 return 2
             else:
                 return 1
+
     def to_display(self):
         status = self.get_status()
-        if status == 0 :
+        if status == 0:
             print(":rocket: "+self.summary)
         if status == 1:
             print(":construction: "+self.summary)
@@ -48,7 +53,6 @@ class Cal:
         print("--简介:" + self.desc)
         print("--开始时间: " + self.start.__str__())
         print("--结束时间: " + self.end.__str__())
-            
 
 
 userHome = os.path.expanduser('~')
@@ -57,11 +61,19 @@ path = userHome+"/Library/Calendars"
 
 icsList = glob.glob(path + "/**/*.ics", recursive=True)
 
-days = 3
+
 formatFileList = []
 calList = []
 
 for fileName in icsList:
+    if len(filterIcs) > 0:
+        filterRes = True
+        for fs in filterIcs:
+            if fs in fileName:
+                filterRes = False
+        if filterRes:
+            continue
+
     cal = {}
     level = 0
     key = ""
@@ -84,7 +96,7 @@ for fileName in icsList:
                     key = keyStack[len(keyStack)-1]
                 continue
             # print(key, keyStack)
-           
+
             if len(l) > 1:
                 cal[key].update({l[0].strip(): l[1].strip().rstrip("\n")})
     if len(cal.keys()) > 0:
@@ -93,10 +105,7 @@ for fileName in icsList:
 for item in formatFileList:
     if len(item["VEVENT"].keys()) > 0:
         start = ""
-        # 过滤条目
-        if "TRANSP" in item["VEVENT"]:
-            if item["VEVENT"]["TRANSP"] != "OPAQUE":
-                continue
+
         # 20190809T160000
         if "DTSTART;TZID=Asia/Shanghai" in item["VEVENT"]:
             start = datetime.strptime(
@@ -115,6 +124,8 @@ for item in formatFileList:
         summary = ""
         if "SUMMARY" in item["VEVENT"]:
             summary = item["VEVENT"]["SUMMARY"]
+        if "SUMMARY;LANGUAGE=zh_CN" in item["VEVENT"]:
+            summary = item["VEVENT"]["SUMMARY;LANGUAGE=zh_CN"]
 
         loc = ""
         if "LOCATION" in item["VEVENT"]:
@@ -129,6 +140,7 @@ for item in formatFileList:
 
         diff = start - today
         if diff.days >= 0 and diff.days <= days:
+            # print(item["file"])
             c = Cal(start, end, summary, loc, desc)
             calList.append(c)
 
@@ -136,48 +148,49 @@ for item in formatFileList:
 preTips = ""
 futureTips = ""
 todayCount = 0
-futureCount=0
+futureCount = 0
 todayFinishCount = 0
 todayList = []
 futureList = []
 for item in calList:
     status = item.get_status()
-    
+
     if status == 0:
         if preTips == "":
             preTips = ":rocket: "+item.summary
         todayList.append(item)
-    
+
     if status == 1:
         if preTips == "":
             preTips = ":construction:"+item.summary
         todayList.append(item)
-    
+
     if status == 2:
-        todayFinishCount+=1
+        todayFinishCount += 1
         todayList.append(item)
-    
+
     if status == 3:
-        futureCount+=1
+        futureCount += 1
         futureList.append(item)
-    
+
 
 preShow = False
 if preTips == "":
     preShow = True
     preTips = ":coffee: 今天无日程安排"
-    if todayFinishCount>0:
+    if todayFinishCount > 0:
         preTips = ":tada: 今天日程已完结"
 
 if len(futureList) == 0:
     futureTips = ":coffee: 未来无日程安排"
-    
-if len(futureList) >0:
+
+if len(futureList) > 0:
     futureTips = ":pencil: 未来"+str(days)+"天有"+str(len(futureList))+"个日程待办"
-    
+
 print(preTips + "| size=14 ")
 print("---")
-if preShow: print(preTips)
+if preShow:
+    print(preTips)
 for item in todayList:
     item.to_display()
 
