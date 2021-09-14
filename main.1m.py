@@ -17,6 +17,25 @@ filterIcs = ["CB445FE1-F8F9-4520-A273-B41F496A6E0E",
              "0077FD37-8D64-47AF-9D89-61FCAB1DF9D6"]
 
 
+def formatSeconds(sec=0):
+    h = sec // 3600
+    hr = sec % 3600
+    m = hr // 60
+    sec = hr % 60
+
+    s = ""
+    if sec < 60 and m == 0 and h == 0:
+        s = "不足1分钟"
+
+    if m > 0:
+        s = str(m)+"分"
+
+    if h > 0:
+        s = str(h)+"小时"+s
+
+    return s
+
+
 class Cal:
     def __init__(self, start: datetime = "", end: datetime = "", summary="", loc="", desc="") -> None:
         self.start = start
@@ -159,11 +178,17 @@ for item in calList:
 
     if status == 0:
         if preTips == "":
-            preTips = ":rocket: "+item.summary
+            # 还有多久开始
+            now = datetime.now()
+            diff = item.start - now
+
+            preTips = ":rocket: 还有" + \
+                formatSeconds(diff.seconds) + "开始: "+item.summary
         todayList.append(item)
 
     if status == 1:
         if preTips == "":
+            # 还有多久结束
             preTips = ":construction:"+item.summary
         todayList.append(item)
 
