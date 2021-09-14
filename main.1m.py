@@ -57,7 +57,7 @@ path = userHome+"/Library/Calendars"
 
 icsList = glob.glob(path + "/**/*.ics", recursive=True)
 
-days = 10
+days = 3
 formatFileList = []
 calList = []
 
@@ -128,7 +128,7 @@ for item in formatFileList:
         today = today.replace(hour=0, minute=0, second=0, microsecond=0)
 
         diff = start - today
-        if diff.days >= -7 and diff.days <= days:
+        if diff.days >= 0 and diff.days <= days:
             c = Cal(start, end, summary, loc, desc)
             calList.append(c)
 
@@ -175,7 +175,7 @@ if len(futureList) == 0:
 if len(futureList) >0:
     futureTips = ":pencil: 未来"+str(days)+"天有"+str(len(futureList))+"个日程待办"
     
-print(preTips + "| size=14")
+print(preTips + "| size=14 ")
 print("---")
 if preShow: print(preTips)
 for item in todayList:
