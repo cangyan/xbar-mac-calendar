@@ -211,7 +211,7 @@ if preTips == "":
         preTips = ":tada: 今天日程已完结"
 
 if len(futureList) == 0:
-    futureTips = ":coffee: 未来无日程安排"
+    futureTips = ":coffee: 未来"+str(days)+"天无日程安排"
 
 if len(futureList) > 0:
     futureTips = ":pencil: 未来"+str(days)+"天有"+str(len(futureList))+"个日程待办"
