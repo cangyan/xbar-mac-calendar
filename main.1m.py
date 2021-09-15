@@ -189,7 +189,8 @@ for item in calList:
     if status == 1:
         if preTips == "":
             # 还有多久结束
-            preTips = ":construction:"+item.summary
+            preTips = ":construction: 还有" + \
+                formatSeconds(diff.seconds) + "结束: "+item.summary
         todayList.append(item)
 
     if status == 2:
