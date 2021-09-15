@@ -13,8 +13,7 @@ import glob
 from datetime import date, datetime
 
 days = 3
-filterIcs = ["CB445FE1-F8F9-4520-A273-B41F496A6E0E",
-             "0077FD37-8D64-47AF-9D89-61FCAB1DF9D6"]
+filterIcs = []
 
 
 def formatSeconds(sec=0):
